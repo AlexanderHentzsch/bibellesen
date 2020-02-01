@@ -7,13 +7,15 @@
         </div>
         <div class="w3-panel">
             <label>Zu lesen:</label>
-            <input class="w3-input w3-border" v-model="current" @keyup.enter="addToLdz">
+            <input class="w3-input w3-border" v-model="current" @keyup.enter="addToLdz()">
             <div class="w3-right-align" style="padding-top: 8px">
                 <button class="w3-button w3-green" @click="addToLdz">Hinzufügen</button>
             </div>
         </div>
         <div>
-            <p v-for="d in ldz" :key="d[1]">{{getWrittenDate(d[0])}} {{d[1]}}</p>
+            <p v-for="d in ldz" :key="d[1]"
+               @click="editClickedElement(d)"
+               class="w3-hover-teal" style="cursor: pointer">{{getListItem(d)}}</p>
         </div>
     </div>
 </template>
@@ -24,16 +26,17 @@
         data() {
             return {
                 current: "",
-                week: 0,
+                week: this.getMonday(new Date()),
                 ldz: []
             }
         },
         mounted() {
-            this.setStartWeek();
-            this.ldz = JSON.parse(localStorage.getItem("ldz"));
+            if (localStorage.getItem("ldz") !== null)
+                this.ldz = JSON.parse(localStorage.getItem("ldz"));
         },
         methods: {
             addToLdz() {
+                // new Index is "add" or "overwrite"
                 let index = this.ldz.length;
                 for (let i = 0; i < this.ldz.length; i++) {
                     if (this.ldz[i][0] === this.week) {
@@ -48,38 +51,52 @@
                     return (test[0] === a) ? -1 : 1;
                 });
 
-
                 localStorage.setItem("ldz", JSON.stringify(this.ldz));
-                this.setForNextEntry();
-            },
-            setStartWeek() {
-                const d = new Date();
-                this.week = this.getMonday(d);
+                this.setForNextEntry(this.week);
             },
             getMonday(d) {
-                let m = (d.getMonth() + 1).toString().padStart(2, "0");
-                let day = d.getDate();
-                let dayName = d.getDay();
+                const _getMonday = function (d) {
+                    d = new Date(d);
+                    let day = d.getDay(),
+                        diff = d.getDate() - day + (day === 0 ? -6 : 1);
+                    return new Date(d.setDate(diff));
+                };
 
-                if (dayName === 0)
-                    day++;
-                if (dayName > 1)
-                    day = day - dayName + 1;
+                const dateToString = function (d) {
+                    d = new Date(d);
+                    let m = (d.getMonth() + 1).toString().padStart(2, "0");
+                    let day = d.getDate().toString().padStart(2, "0");
+                    return `${d.getFullYear()}-${m}-${day}`;
+                };
 
-                day = day.toString().padStart(2, "0");
-                return `${d.getFullYear()}-${m}-${day}`;
+                return dateToString(_getMonday(new Date(d)));
             },
-            setForNextEntry() {
-                const curUnix = new Date(this.week).getTime();
-                const sevenDays = 1000 * 60 * 60 * 24 * 7;
-                this.week = this.getMonday(new Date(curUnix + sevenDays));
+            setForNextEntry(d) {
+                const setDay = (currentDay) => {
+                    const curUnix = new Date(currentDay).getTime();
+                    const sevenDays = 1000 * 60 * 60 * 24 * 7;
+                    return this.getMonday(new Date(curUnix + sevenDays));
+                };
 
-                const cut = this.current.indexOf(" ", 3);
-                this.current = this.current.substring(0, cut) + " ";
+                const setContent = (currentLdz) => {
+                    const cut = currentLdz.indexOf(" ", 3);
+                    return currentLdz.substring(0, cut) + " ";
+                };
+
+                this.week = setDay(d);
+                this.current = setContent(this.current);
             },
-            getWrittenDate(d) {
-                d = d.split("-");
-                return `${d[2]}.${d[1]}`;
+            getListItem(d) {
+                const getWrittenDate = function (d) {
+                    d = d.split("-");
+                    return `${d[2]}.${d[1]}`;
+                };
+
+                return getWrittenDate(d[0]) + " " + d[1];
+            },
+            editClickedElement(el) {
+                this.week = el[0];
+                this.current = el[1];
             }
         }
     }
