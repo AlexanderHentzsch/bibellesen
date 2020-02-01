@@ -5,6 +5,7 @@
             <router-link to="/" class="w3-button">Übersicht</router-link>
             <router-link to="/ldz" class="w3-button">LDZ</router-link>
             <router-link to="/personally" class="w3-button">Persönlich</router-link>
+            <router-link to="/option" class="w3-button">Optionen</router-link>
         </div>
     </div>
 </template>
@@ -15,9 +16,10 @@
     }
 </script>
 
-<style scoped>
+<style>
+    @import "assets/w3.css";
+
     #App {
-        height: 100%;
         margin-bottom: 40px;
     }
 

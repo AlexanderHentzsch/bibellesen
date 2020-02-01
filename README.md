@@ -1,24 +1,12 @@
-# bl2
+# Bibelleseplan #
 
-## Project setup
-```
-yarn install
-```
-
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
-
-### Compiles and minifies for production
-```
-yarn build
-```
-
-### Lints and fixes files
-```
-yarn lint
-```
+## ToDo ##
+- Optionen
+    - als Datei LDZ, Personally und finished ex-/importieren
+    - Serveradresse hinterlegen
+    
+        
+- Code Refractoring
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
