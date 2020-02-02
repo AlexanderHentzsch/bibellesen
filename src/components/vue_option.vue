@@ -3,21 +3,16 @@
         <div class="w3-content w3-container">
             <h1>Optionen</h1>
 
-            <div>
-                <h2 style="margin-top: 64px">Lizenz</h2>
-                <p>
-                    <a href="https://github.com/AlexanderHentzsch/Bibelleseplan/blob/master/LICENSE" target="_blank">
-                        JW Notes - The MIT License (MIT)
-                    </a>
-                </p>
-
-                <h3 style="margin-top: 48px">Third-party libraries</h3>
-                <p>
-                    <a href="https://github.com/vuejs/vue/blob/dev/LICENSE" target="_blank">
-                        Vue.js - The MIT License (MIT)
-                    </a>
-                </p>
-            </div>
+            <ul class="w3-ul">
+                <li>
+                    <h2>Lizenzen</h2>
+                </li>
+                <li v-for="l in licenses" :key="l.name">
+                    <p style="margin: 0">
+                        {{l.name}} - <a :href="l.url" target="_blank">{{l.license}} License</a>
+                    </p>
+                </li>
+            </ul>
         </div>
 
         <div id="container-github">
@@ -35,27 +30,38 @@
             return {
                 fontSize: 4,
                 localStorageKey: "options",
-                hrefGitHub: "https://github.com/AlexanderHentzsch/bibellesen"
+                hrefGitHub: "https://github.com/AlexanderHentzsch/bibellesen",
+                licenses: [
+                    {
+                        name: "JW Bibelleseplan",
+                        url: "https://github.com/AlexanderHentzsch/bibellesen/blob/master/LICENSE",
+                        license: "MIT"
+                    },
+                    {name: "Vue.js", url: "https://github.com/vuejs/vue/blob/dev/LICENSE", license: "MIT"},
+                    {name: "vue-router", url: "https://github.com/vuejs/vue-router/blob/dev/LICENSE", license: "MIT"},
+                    {name: "jQuery", url: "https://github.com/jquery/jquery/blob/master/LICENSE.txt", license: "MIT"},
+                    {name: "w3css", url: "https://www.w3schools.com/w3css/default.asp", license: "No"}
+                    //{name: "", url: "", license: ""}
+                ]
             }
         },
         mounted() {
         },
-        methods: {
-        }
+        methods: {}
     }
 </script>
 
 <style scoped>
-    #container-github{
+    #container-github {
         padding: 16px;
         text-align: center;
     }
 
-    #a-github{
+    #a-github {
         text-decoration: none;
     }
 
-    #span-github{
+    #span-github {
         background-color: #000;
         color: #fff;
         border-radius: 60px;
