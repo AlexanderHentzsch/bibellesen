@@ -47,23 +47,28 @@
                 week: this.getMonday(new Date()),
                 ldz: [],
                 saveSuccess: false,
-                lsKeyName: "ldz"
+                lsKeyName: "ldz",
+                baseUrl: "http://localhost:8081/"
             }
         },
         mounted() {
             if (localStorage.getItem(this.lsKeyName) !== null)
                 this.ldz = JSON.parse(localStorage.getItem(this.lsKeyName));
+
+            const baseUrl = localStorage.getItem("baseUrl");
+            if (baseUrl !== null)
+                this.baseUrl = baseUrl;
         },
         methods: {
             saveLdzOnServer(ldz) {
-                const url = "http://localhost:8081/?/save/ldz/";
+                const url = `${this.baseUrl}?/save/ldz/`;
                 const content = {ldz: JSON.stringify(ldz)};
                 $.post(url, content, (sDATA) => {
                     this.saveSuccess = sDATA;
                 });
             },
             loadLdzFromServer() {
-                const url = "http://localhost:8081/?/load/ldz/";
+                const url = `${this.baseUrl}?/load/ldz/`;
                 $.get(url, (sDATA) => {
                     localStorage.setItem(this.lsKeyName, JSON.stringify(sDATA));
                     this.ldz = sDATA;

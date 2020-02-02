@@ -5,6 +5,7 @@
         <div class="w3-container">
             <button class="w3-button w3-green" @click="savePersonallyOnServer(personally)">Auf Server speichern</button>
             <button class="w3-button w3-green" @click="loadPersonallyFromServer()">Vom Server laden</button>
+            <a :href="`${this.baseUrl}?/load/personally/`">{{`${this.baseUrl}?/load/personally/`}}</a>
         </div>
 
         <div v-if="saveSuccess" class="w3-card-4 w3-content" style="max-width: 300px">
@@ -48,12 +49,17 @@
                 day: this.getTodayString(),
                 personally: [],
                 saveSuccess: false,
-                lsKeyName: "personally"
+                lsKeyName: "personally",
+                baseUrl: "http://localhost:8081/"
             }
         },
         mounted() {
             if (localStorage.getItem(this.lsKeyName) !== null)
                 this.personally = JSON.parse(localStorage.getItem(this.lsKeyName));
+
+            const baseUrl = localStorage.getItem("baseUrl");
+            if (baseUrl !== null)
+                this.baseUrl = baseUrl;
         },
         methods: {
             getTodayString() {
@@ -64,14 +70,15 @@
                 return [y, m, day].join("-");
             },
             savePersonallyOnServer(personally) {
-                const url = "http://localhost:8081/?/save/personally/";
+                const url = `${this.baseUrl}?/save/personally/`;
                 const content = {personally: JSON.stringify(personally)};
                 $.post(url, content, (sDATA) => {
                     this.saveSuccess = sDATA;
                 });
             },
             loadPersonallyFromServer() {
-                const url = "http://localhost:8081/?/load/personally/";
+                const url = `${this.baseUrl}?/load/personally/`;
+                alert(url);
                 $.get(url, (sDATA) => {
                     localStorage.setItem(this.lsKeyName, JSON.stringify(sDATA));
                     this.personally = sDATA;

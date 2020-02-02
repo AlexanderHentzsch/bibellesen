@@ -51,13 +51,15 @@
                 personally: [],
                 finished: [],
                 saveSuccess: false,
-                lsKeyName: "reading"
+                lsKeyName: "reading",
+                baseUrl: "http://localhost:8081/"
             }
         },
         mounted() {
             const lsLdz = localStorage.getItem("ldz");
             const lsPersonally = localStorage.getItem("personally");
             const lsReading = localStorage.getItem(this.lsKeyName);
+            const baseUrl = localStorage.getItem("baseUrl");
 
             if (lsLdz !== null)
                 this.ldz = JSON.parse(lsLdz);
@@ -67,6 +69,9 @@
 
             if (lsReading !== null)
                 this.finished = JSON.parse(lsReading);
+
+            if (baseUrl !== null)
+                this.baseUrl = baseUrl;
         },
         methods: {
             getReadingList(ldz, personally) {
@@ -104,14 +109,14 @@
                     return `finished`;
             },
             saveReadingOnServer(reading) {
-                const url = "http://localhost:8081/?/save/reading/";
+                const url = `${this.baseUrl}?/save/reading/`;
                 const content = {reading: JSON.stringify(reading)};
                 $.post(url, content, (sDATA) => {
                     this.saveSuccess = sDATA;
                 });
             },
             loadReadingFromServer() {
-                const url = "http://localhost:8081/?/load/reading/";
+                const url = `${this.baseUrl}?/load/reading/`;
                 $.get(url, (sDATA) => {
                     localStorage.setItem(this.lsKeyName, JSON.stringify(sDATA));
                     this.finished = sDATA;
