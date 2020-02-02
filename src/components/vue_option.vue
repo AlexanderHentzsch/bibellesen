@@ -1,19 +1,21 @@
 <template>
-    <div class="container-content">
-        <div class="w3-content w3-container">
-            <h1>Optionen</h1>
+    <div class="w3-content w3-container">
+        <h1>Optionen</h1>
 
-            <ul class="w3-ul">
-                <li>
-                    <h2>Lizenzen</h2>
-                </li>
-                <li v-for="l in licenses" :key="l.name">
-                    <p style="margin: 0">
-                        {{l.name}} - <a :href="l.url" target="_blank">{{l.license}} License</a>
-                    </p>
-                </li>
-            </ul>
-        </div>
+        <h2>Server konfiguration</h2>
+        <label>Base-URL
+            <input class="w3-input w3-border" v-model="baseUrl" @change="changeBaseUrl()">
+            <span class="w3-small">Für externe Server muss http:// bzw. https:// als Präfix verwendet werden.</span>
+        </label>
+
+        <h2>Lizenzen</h2>
+        <ul class="w3-ul">
+            <li v-for="l in licenses" :key="l.name">
+                <p style="margin: 0">
+                    {{l.name}} - <a :href="l.url" target="_blank">{{l.license}} License</a>
+                </p>
+            </li>
+        </ul>
 
         <div id="container-github">
             <a :href="hrefGitHub" id="a-github" target="_blank">
@@ -29,7 +31,8 @@
         data() {
             return {
                 fontSize: 4,
-                localStorageKey: "options",
+                lsKeyName: "baseUrl",
+                baseUrl: "localhost:8081/",
                 hrefGitHub: "https://github.com/AlexanderHentzsch/bibellesen",
                 licenses: [
                     {
@@ -46,8 +49,19 @@
             }
         },
         mounted() {
+            const ls = localStorage.getItem(this.lsKeyName);
+            if (ls !== null)
+                this.baseUrl = ls;
         },
-        methods: {}
+        methods: {
+            changeBaseUrl() {
+                const lastChar = this.baseUrl.substr(-1);
+                if (lastChar !== "/")
+                    this.baseUrl += "/";
+
+                localStorage.setItem(this.lsKeyName, this.baseUrl);
+            }
+        }
     }
 </script>
 
